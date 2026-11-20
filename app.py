@@ -29,7 +29,9 @@ POSITIONS = ["PG", "SG", "SF", "PF", "C"]
 DEFAULTS = {"min_games": 20, "max_points": 15, "min_contribution": 8,
             "positions": POSITIONS, "player_search": ""}
 
-st.set_page_config(page_title="Undervalued NBA Player Scout", page_icon="🏀", layout="wide")
+st.set_page_config(page_title="Undervalued NBA Player Scout",
+                   page_icon="assets/favicon.png",
+                   layout="wide")
 ui.inject_css()
 
 
@@ -40,7 +42,8 @@ def load_data() -> pd.DataFrame:
 
 def reset_filters() -> None:
     for key, value in DEFAULTS.items():
-        st.session_state[key] = list(value) if isinstance(value, list) else value
+        st.session_state[key] = list(
+            value) if isinstance(value, list) else value
 
 
 df = load_data()
@@ -69,14 +72,17 @@ efficiency, turnovers, defense beyond steals and blocks, and teammate quality.
 
 # --------------------------------------------------------------- sidebar
 for key, value in DEFAULTS.items():
-    st.session_state.setdefault(key, list(value) if isinstance(value, list) else value)
+    st.session_state.setdefault(
+        key, list(value) if isinstance(value, list) else value)
 
 with st.sidebar:
     st.header("Refine your search")
-    st.text_input("Search for a player", placeholder="e.g. Alex Caruso", key="player_search")
+    st.text_input("Search for a player",
+                  placeholder="e.g. Alex Caruso", key="player_search")
     st.multiselect("Positions", POSITIONS, key="positions")
     st.slider("Minimum games played", 1, int(df["G"].max()), key="min_games")
-    st.slider("Maximum points per game", 0, math.ceil(df["PTS"].max()), key="max_points")
+    st.slider("Maximum points per game", 0, math.ceil(
+        df["PTS"].max()), key="max_points")
     st.slider("Minimum non-scoring score", 0, math.ceil(df[NON_SCORING].max()),
               key="min_contribution",
               help="Rebounds + assists + steals + blocks per game.")
@@ -90,7 +96,8 @@ filters = {
     "positions": st.session_state["positions"],
     "name_query": st.session_state["player_search"],
 }
-filtered = filter_players(df, min_non_scoring=st.session_state["min_contribution"], **filters)
+filtered = filter_players(
+    df, min_non_scoring=st.session_state["min_contribution"], **filters)
 
 # ------------------------------------------------------------------ tabs
 tab_discover, tab_position, tab_minutes, tab_chart, tab_compare = st.tabs(
@@ -105,13 +112,15 @@ with tab_discover:
     if filtered.empty:
         ui.empty_state()
     else:
-        ui.kpi_row(len(filtered), filtered["PTS"].mean(), filtered[PER_36].max())
+        ui.kpi_row(len(filtered),
+                   filtered["PTS"].mean(), filtered[PER_36].max())
         st.write("")
         ui.leaderboard(filtered.sort_values(PER_36, ascending=False),
                        score_column=PER_36, show_position=True)
         st.download_button(
             "Download results (CSV)",
-            data=filtered.sort_values(PER_36, ascending=False).to_csv(index=False),
+            data=filtered.sort_values(
+                PER_36, ascending=False).to_csv(index=False),
             file_name="nba_scouting_results.csv",
             mime="text/csv",
         )
@@ -124,7 +133,8 @@ with tab_position:
     if filtered.empty:
         ui.empty_state()
     else:
-        ui.leaderboard(filtered.sort_values(POS_ADJ, ascending=False), score_column=POS_ADJ)
+        ui.leaderboard(filtered.sort_values(
+            POS_ADJ, ascending=False), score_column=POS_ADJ)
 
 with tab_minutes:
     st.subheader("Most productive in limited minutes")
@@ -133,7 +143,8 @@ with tab_minutes:
                "position-adjusted score.")
     bench = limited_minutes(filter_players(df, **filters), max_minutes)
     if bench.empty:
-        ui.empty_state(f"No players average under {max_minutes} minutes with these filters.")
+        ui.empty_state(
+            f"No players average under {max_minutes} minutes with these filters.")
     else:
         ui.leaderboard(bench, score_column=POS_ADJ)
 
@@ -142,7 +153,8 @@ with tab_chart:
     if filtered.empty:
         ui.empty_state()
     else:
-        plot_df = filtered.assign(**{"Scoring Group": scoring_group(filtered["PTS"])})
+        plot_df = filtered.assign(
+            **{"Scoring Group": scoring_group(filtered["PTS"])})
         st.plotly_chart(charts.scoring_scatter(plot_df))
         st.caption("Higher on the chart means more rebounds, assists, steals and blocks "
                    "per 36 minutes. The eight highest players are labeled.")
@@ -150,8 +162,10 @@ with tab_chart:
 with tab_compare:
     st.subheader("Player comparison")
     names = sorted(df["Player"])
-    default_a = names.index("Shai Gilgeous-Alexander") if "Shai Gilgeous-Alexander" in names else 0
-    default_b = names.index("Nikola Jokić") if "Nikola Jokić" in names else min(1, len(names) - 1)
+    default_a = names.index(
+        "Shai Gilgeous-Alexander") if "Shai Gilgeous-Alexander" in names else 0
+    default_b = names.index(
+        "Nikola Jokić") if "Nikola Jokić" in names else min(1, len(names) - 1)
     left, right = st.columns(2)
     first_name = left.selectbox("First player", names, index=default_a)
     second_name = right.selectbox("Second player", names, index=default_b)
@@ -175,7 +189,8 @@ with tab_compare:
         wins_first = sum(first[s] > second[s] for s in stats)
         wins_second = sum(second[s] > first[s] for s in stats)
         if wins_first == wins_second:
-            st.info(f"{first_name} and {second_name} are tied across these categories.")
+            st.info(
+                f"{first_name} and {second_name} are tied across these categories.")
         else:
             leader = first_name if wins_first > wins_second else second_name
             st.success(f"{leader} leads in more statistical categories "
