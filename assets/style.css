@@ -1,0 +1,28 @@
+/* Hero */
+.hero { padding: 6px 0 18px 0; }
+.hero-kicker {
+    color: #22C55E; font-size: 13px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+}
+.hero h1 {
+    color: #F3F7F4; font-size: clamp(34px, 5vw, 52px); font-weight: 800;
+    line-height: 1.12; margin: 10px 0 8px 0; padding: 0;
+}
+.hero p { color: #A1ADA5; font-size: 19px; margin: 0; }
+
+/* KPI cards (st.metric) */
+[data-testid="stMetric"] {
+    background: #151C19; border: 1px solid #26352C; border-radius: 12px;
+    padding: 18px 22px;
+}
+[data-testid="stMetricLabel"] p {
+    color: #A1ADA5; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+}
+[data-testid="stMetricValue"] { color: #F3F7F4; font-weight: 800; }
+
+/* Tabs */
+button[data-baseweb="tab"] { font-weight: 600; }
+
+/* Footer */
+.app-footer { color: #A1ADA5; font-size: 13px; padding-top: 24px; }
+.app-footer a { color: #22C55E; }
