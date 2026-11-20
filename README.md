@@ -1,5 +1,5 @@
 # 🏀 Undervalued NBA Player Scout
-
+[🚀 Live Dashboard](https://nba-undervalued-scout-eyeftjvfwkbot4vqb8q4yf.streamlit.app/)
 An interactive Streamlit dashboard that surfaces NBA players who help their teams through **rebounds, assists, steals and blocks** rather than points. Built on 2024–25 per-game data from Basketball-Reference.
 
 <!-- Add a screenshot: docs/screenshot.png -->
